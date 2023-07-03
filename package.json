@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" && npx prisma format",
     "railway:build": "pnpm run db:generate-types && pnpm run build",
     "railway:start": "pnpm run start:dev",
-    "db:generate-types": "npx prisma generate --schema=.src/prisma/schema.prisma",
+    "db:generate-types": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
