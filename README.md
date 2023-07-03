@@ -72,6 +72,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-
-https://github.com/prisma/prisma/issues/3144
-`--schema`
+## When `npx prisma generate` not working ...
+https://github.com/prisma/prisma/issues/14722
+Just reload VSCode
