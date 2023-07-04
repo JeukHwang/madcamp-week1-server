@@ -74,7 +74,6 @@ export class UserService {
           ...userInfo,
           name: undefined,
           password: undefined,
-          email: undefined,
         },
       });
       const user = await this.prismaService.user.findFirst({
