@@ -3,12 +3,18 @@ import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { RegisterRequestDto } from 'src/auth/dto/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserUpdateDto } from './update.dto';
 
 export type UserProfile = {
   id: string;
   email: string;
   name: string;
   profilePhoto: string;
+  githubId: string;
+  instagramId: string;
+  facebookId: string;
+  linkedInId: string;
+  explanation: string;
 };
 
 export function toUserProfile(user: User): UserProfile {
@@ -17,6 +23,11 @@ export function toUserProfile(user: User): UserProfile {
     email: user.email,
     name: user.name,
     profilePhoto: user.profilePhoto,
+    githubId: user.githubId,
+    instagramId: user.instagramId,
+    facebookId: user.facebookId,
+    linkedInId: user.linkedInId,
+    explanation: user.explanation,
   };
 }
 
@@ -34,6 +45,31 @@ export class UserService {
         },
       });
       return user;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // The .code property can be accessed in a type-safe manner
+        if (e.code === 'P2002') {
+          console.log(
+            'There is a unique constraint violation, a new user cannot be created with this email',
+          );
+          throw new UnauthorizedException('Unique constraint violated');
+        }
+      }
+      throw e;
+    }
+  }
+
+  async update(userInfo: UserUpdateDto): Promise<UserProfile> {
+    try {
+      await this.prismaService.user.updateMany({
+        where: { name: userInfo.name },
+        data: {
+          ...userInfo,
+        },
+      });
+      return await this.prismaService.user.findFirst({
+        where: { name: userInfo.name },
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner
