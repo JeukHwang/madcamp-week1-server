@@ -130,6 +130,13 @@ export class UserService {
     return user;
   }
 
+  async findByName(name: string): Promise<UserProfile> {
+    const user = await this.prismaService.user.findFirst({
+      where: { deletedAt: null, name: name },
+    });
+    return toUserProfile(user);
+  }
+
   async removeById(id: string) {
     // TODO: change into soft delete middleware
     await this.prismaService.user.updateMany({

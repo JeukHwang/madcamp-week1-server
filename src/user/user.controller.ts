@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Public } from 'src/auth/decorator/skip-auth.decorator';
 import { CurrentUser } from './decorator/current.decorator';
@@ -24,5 +24,11 @@ export class UserController {
   @Post('update')
   async update(@Body() userInfo: UserUpdateDto): Promise<UserProfile> {
     return await this.userService.update(userInfo);
+  }
+
+  @Public()
+  @Get('get/:name')
+  async get(@Param('name') name: string): Promise<UserProfile> {
+    return await this.userService.findByName(name);
   }
 }
