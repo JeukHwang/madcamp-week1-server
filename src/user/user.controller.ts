@@ -22,7 +22,7 @@ export class UserController {
 
   @Public()
   @Post('update')
-  async signUp(@Body() userInfo: UserUpdateDto): Promise<UserProfile> {
+  async update(@Body() userInfo: UserUpdateDto): Promise<UserProfile> {
     return await this.userService.update(userInfo);
   }
 }

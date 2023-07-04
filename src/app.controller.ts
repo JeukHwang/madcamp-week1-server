@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   StreamableFile,
   UploadedFile,
@@ -54,9 +55,10 @@ export class AppController {
   }
 
   @Public()
-  @Post('/test/public-download/')
-  async downloadFile(@Body() body) {
-    const result = await download(body.key);
+  @Get('/test/public-download/:name')
+  async downloadFile(@Param('name') name: string) {
+    console.log(name);
+    const result = await download(name);
     return new StreamableFile(result);
   }
 

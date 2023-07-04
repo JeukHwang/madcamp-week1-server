@@ -15,6 +15,7 @@ export type UserProfile = {
   facebookId: string;
   linkedInId: string;
   explanation: string;
+  classNum: number;
 };
 
 export function toUserProfile(user: User): UserProfile {
@@ -28,6 +29,7 @@ export function toUserProfile(user: User): UserProfile {
     facebookId: user.facebookId,
     linkedInId: user.linkedInId,
     explanation: user.explanation,
+    classNum: user.classNum,
   };
 }
 
@@ -36,6 +38,7 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(userInfo: RegisterRequestDto): Promise<User | null> {
     try {
+      //   const defaultProfilePhoto = `https://madcamp-week1-server-production.up.railway.app/test/public-download/eb9z7y02_user.png`;
       const defaultProfilePhoto =
         'https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80';
       const user = await this.prismaService.user.create({
@@ -61,15 +64,26 @@ export class UserService {
 
   async update(userInfo: UserUpdateDto): Promise<UserProfile> {
     try {
+      const isValid = await this.valid(userInfo.name, userInfo.password);
+      if (!isValid) {
+        throw new UnauthorizedException('Invalid password');
+      }
       await this.prismaService.user.updateMany({
         where: { name: userInfo.name },
         data: {
           ...userInfo,
+          name: undefined,
+          password: undefined,
+          email: undefined,
         },
       });
-      return await this.prismaService.user.findFirst({
+      const user = await this.prismaService.user.findFirst({
         where: { name: userInfo.name },
       });
+      if (!user) {
+        throw new UnauthorizedException('Invalid password');
+      }
+      return toUserProfile(user);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner
@@ -82,6 +96,17 @@ export class UserService {
       }
       throw e;
     }
+  }
+
+  async valid(name: string, password: string): Promise<boolean> {
+    const user = await this.prismaService.user.findFirst({
+      where: { deletedAt: null, name: name },
+    });
+    if (user) {
+      const valid = await bcrypt.compare(password, user.password);
+      return valid;
+    }
+    return false;
   }
 
   async findAllProfile(): Promise<UserProfile[]> {

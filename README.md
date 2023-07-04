@@ -75,3 +75,10 @@ Nest is [MIT licensed](LICENSE).
 ## When `npx prisma generate` not working ...
 https://github.com/prisma/prisma/issues/14722
 Just reload VSCode
+
+## API
+user/all void -> UserProfile[]
+auth/signup RegisterRequestDto -> UserProfile
+
+auth/valid ValidRequestDto -> boolean
+user/update UserUpdateDto -> UserProfile

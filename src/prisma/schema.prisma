@@ -29,9 +29,9 @@ model Space {
 model User {
   id String @id @default(uuid())
 
-  email        String  @unique()
+  email        String?
   password     String
-  name         String
+  name         String @unique()
   profilePhoto String
   refreshToken String?
 
@@ -40,6 +40,7 @@ model User {
   facebookId  String?
   linkedInId  String?
   explanation String?
+  classNum Int
 
   userSpace UserSpace[]
   creator   Space[]

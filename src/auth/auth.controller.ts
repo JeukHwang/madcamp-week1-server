@@ -15,6 +15,7 @@ import { Public } from './decorator/skip-auth.decorator';
 import { RegisterRequestDto } from './dto/register.dto';
 import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { ValidRequestDto } from './dto/valid.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +28,12 @@ export class AuthController {
   @Post('signup')
   async signUp(@Body() userInfo: RegisterRequestDto): Promise<UserProfile> {
     return await this.authService.register(userInfo);
+  }
+
+  @Public()
+  @Post('valid')
+  async isValid(@Body() userInfo: ValidRequestDto): Promise<boolean> {
+    return await this.userService.valid(userInfo.name, userInfo.password);
   }
 
   @Public()
