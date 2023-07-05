@@ -45,5 +45,10 @@ export function upload(req: Request, file: Express.Multer.File) {
 }
 
 export function download(fileKey: string) {
-  return s3.getObject({ Key: fileKey, Bucket: bucketName }).createReadStream();
+  return s3
+    .getObject({ Key: fileKey, Bucket: bucketName })
+    .createReadStream()
+    .on('error', function (err) {
+      console.log(err);
+    });
 }
