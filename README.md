@@ -82,3 +82,6 @@ auth/signup RegisterRequestDto -> UserProfile
 
 auth/valid ValidRequestDto -> boolean
 user/update UserUpdateDto -> UserProfile
+
+user getone
+user getall

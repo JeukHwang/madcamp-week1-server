@@ -12,6 +12,7 @@ import { PostModule } from './post/post.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SpaceModule } from './space/space.module';
 import { UserModule } from './user/user.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UserModule } from './user/user.module';
     ChatModule,
     AuthModule,
     PrismaModule,
+    FeedModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

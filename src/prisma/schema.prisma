@@ -31,7 +31,7 @@ model User {
 
   email        String?
   password     String
-  name         String @unique()
+  name         String  @unique()
   profilePhoto String
   refreshToken String?
 
@@ -40,12 +40,14 @@ model User {
   facebookId  String?
   linkedInId  String?
   explanation String?
-  classNum Int
+  classNum    Int
 
   userSpace UserSpace[]
   creator   Space[]
   post      Post[]
   chat      Chat[]
+  feed      Feed[]
+  userFeed  UserFeed[]
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -115,6 +117,35 @@ model Chat {
   parentChatId String?
   parentChat   Chat?   @relation("ParentChatChildChat", fields: [parentChatId], references: [id])
   childChat    Chat[]  @relation("ParentChatChildChat")
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model Feed {
+  id String @id @default(uuid())
+
+  photo   String
+  content String
+
+  authorName String
+  author     User   @relation(fields: [authorName], references: [name])
+
+  userFeed UserFeed[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model UserFeed {
+  id String @id @default(uuid())
+
+  taggedUserName String
+  taggedUser     User   @relation(fields: [taggedUserName], references: [name])
+  feedId         String
+  feed           Feed   @relation(fields: [feedId], references: [id])
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
