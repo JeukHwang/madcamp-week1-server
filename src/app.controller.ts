@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -47,9 +48,9 @@ export class AppController {
   @Public()
   @Post('/test/public-upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file) {
+  async uploadFile(@Req() req, @UploadedFile() file) {
     // console.log(file);
-    const result = await upload(file);
+    const result = await upload(req, file);
     // console.log(result);
     return { key: result.Key };
   }

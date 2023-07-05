@@ -3,19 +3,21 @@ import {
   Controller,
   Get,
   Post,
+  Req,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
+import { Request } from 'express';
 import { download } from 'src/s3';
 import { CurrentUser } from 'src/user/decorator/current.decorator';
 import { CreatePostRequestDto } from './dto/create.dto';
 import { DeletePostRequestDto } from './dto/delete.dto';
+import { DownloadPostRequestDto } from './dto/download.dto';
 import { GetAllPostRequestDto } from './dto/getAll.dto';
 import { PostProfile, PostService } from './post.service';
-import { DownloadPostRequestDto } from './dto/download.dto';
 
 @Controller('post')
 export class PostController {
@@ -32,6 +34,7 @@ export class PostController {
   @Post('create')
   @UseInterceptors(FileInterceptor('file'))
   async create(
+    @Req() req: Request,
     @Body() body: CreatePostRequestDto,
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
@@ -39,7 +42,7 @@ export class PostController {
     const postInfo = {
       ...body,
     };
-    return await this.postService.create(postInfo, user, file);
+    return await this.postService.create(req, postInfo, user, file);
   }
 
   @Post('download-file')

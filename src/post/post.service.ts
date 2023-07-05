@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Req,
   UnauthorizedException,
   forwardRef,
 } from '@nestjs/common';
@@ -53,6 +54,7 @@ export class PostService {
   ) {}
 
   async create(
+    @Req() req,
     postInfo: CreatePostRequestDto,
     author: User,
     file: Express.Multer.File,
@@ -76,7 +78,7 @@ export class PostService {
     if (!isManager && isNotice) {
       throw new UnauthorizedException('Only manager can create notice.');
     }
-    const result = await upload(file);
+    const result = await upload(req, file);
     const post = await this.prismaService.post.create({
       data: { ...postInfo, isAnonymous, authorId: author.id, file: result.Key },
     });

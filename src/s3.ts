@@ -1,6 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 // import { S3 } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
+import { Request } from 'express';
 import { Readable } from 'stream';
 dotenv.config();
 
@@ -26,15 +27,18 @@ function bufferToStream(binary) {
   return readableInstanceStream;
 }
 
-export function upload(file: Express.Multer.File) {
+export function upload(req: Request, file: Express.Multer.File) {
   //   console.log(file);
   const code = Array.from(Array(8), () =>
     Math.floor(Math.random() * 36).toString(36),
   ).join('');
   return s3
     .upload({
+      ACL: 'public-read',
       Bucket: bucketName,
       Body: bufferToStream(file.buffer),
+      ContentType: req.file.mimetype,
+      ContentDisposition: 'inline',
       Key: code + '_' + file.originalname,
     })
     .promise();
