@@ -45,5 +45,5 @@ export class FeedController {
   @Post('update')
   async update(@Body() body: UpdateFeedRequestDto): Promise<FeedProfile> {
     return await this.feedService.update(body);
-  }x
+  }
 }
